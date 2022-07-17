@@ -438,7 +438,7 @@ void loop() {
       status = 2;
     }
     else {
-      /* per 10 minuti resta in ascolto poi si resetta */
+      /* per 5 minuti resta in ascolto poi si resetta */
 
        server.handleClient();
 
