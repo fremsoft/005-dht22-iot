@@ -283,6 +283,7 @@ void loop_ok() {
     url = url + String(temperatura);
     url = url + "&h=";
     url = url + String(umidita);
+    url.replace(" ", "%20");    // urlencode molto semplice solo per gli spazi
     
     if (https.begin(*client, url)) {  // HTTPS
 
@@ -320,19 +321,27 @@ void handleRoot() {
   bool save_config = false;
 
   if (server.hasArg("ssid") && (server.arg("ssid").length() < PARAM_SIZE)) {
-    server.arg("ssid").toCharArray(eeprom_config.ssid, PARAM_SIZE);
+    String t = server.arg("ssid");
+    t.trim();
+    t.toCharArray(eeprom_config.ssid, PARAM_SIZE);
     save_config = true;
   }
   if (server.hasArg("pass") && (server.arg("pass").length() < PARAM_SIZE)) {
-    server.arg("pass").toCharArray(eeprom_config.pass, PARAM_SIZE);
+    String t = server.arg("pass");
+    t.trim();
+    t.toCharArray(eeprom_config.pass, PARAM_SIZE);
     save_config = true;
   }
   if (server.hasArg("device_id") && (server.arg("device_id").length() < PARAM_SIZE)) {
-    server.arg("device_id").toCharArray(eeprom_config.device_id, PARAM_SIZE);
+    String t = server.arg("device_id");
+    t.trim();
+    t.toCharArray(eeprom_config.device_id, PARAM_SIZE);
     save_config = true;
   }
   if (server.hasArg("webservice") && (server.arg("webservice").length() < PARAM_SIZE)) {
-    server.arg("webservice").toCharArray(eeprom_config.webservice, PARAM_SIZE);
+    String t = server.arg("webservice");
+    t.trim();
+    t.toCharArray(eeprom_config.webservice, PARAM_SIZE);
     save_config = true;
   }
 
@@ -438,8 +447,7 @@ void loop() {
       status = 2;
     }
     else {
-      /* per 5 minuti resta in ascolto poi si resetta */
-
+       /* per 5 minuti resta in ascolto poi si resetta */
        server.handleClient();
 
        if (millis() > MAX_SOFTAP_TIME_MS) { ESP.restart(); }
