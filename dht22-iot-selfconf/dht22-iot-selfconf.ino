@@ -12,10 +12,11 @@
  * 
  * La configurazione SSID e PASSWORD è memorizzata in memoria 
  * non volatile. Se il dispositivo all'accensione non riesce 
- * a connettersi alla rete Wi-Fi, diventa Soft-AP e attiva un 
- * servizio web con SSID "DHT22 IoT" e password "12345678", 
- * disponibile all'indirizzo 192.168.10.1 e con cui si può 
- * programmare il servizio mediante lo smartphone.
+ * a connettersi alla rete Wi-Fi, oppure se si preme il pulsante 
+ * posizionato all'ingresso GPIO3/RX con resistenza di pull-up,
+ * diventa Soft-AP e attiva un servizio web con SSID "DHT22 IoT" 
+ * e password "12345678" disponibile all'indirizzo 192.168.10.1 
+ * e con cui si può programmare il servizio mediante lo smartphone.
  * 
  * Sketch basato sul programma di esempio "WiFiAccessPoint"
  * 
@@ -50,6 +51,8 @@ ESP8266WiFiMulti WiFiMulti;
 
 int status;
 
+
+#define CONFPIN             3 /* GPIO3 = RX */
 
 #define DHTPIN              2
 #define DHTTYPE         DHT22
@@ -208,6 +211,14 @@ void saveConfig()
 }
 
 void setup() {
+  int tries = 0;
+  
+  pinMode( DHTPIN,  INPUT );
+  pinMode( CONFPIN, INPUT );
+  if (digitalRead (CONFPIN) == LOW) {
+    /* forza la modalità SoftAP */
+    tries = 10; 
+  }  
 
   Serial.begin(115200);
   // Serial.setDebugOutput(true);
@@ -225,15 +236,14 @@ void setup() {
   EEPROM.begin(512);
   loadConfig();
 
-  WiFi.mode(WIFI_STA);
-  WiFiMulti.addAP(eeprom_config.ssid, eeprom_config.pass);
-
-  pinMode( DHTPIN, INPUT );
-
-  Serial.print("Waiting for connection.");
-  int tries = 0;
-  while ((WiFiMulti.run() != WL_CONNECTED) && (tries++ < 3)) { Serial.print("."); }
-
+  if (tries == 0) {
+    WiFi.mode(WIFI_STA);
+    WiFiMulti.addAP(eeprom_config.ssid, eeprom_config.pass);
+  
+    Serial.print("Waiting for connection.");
+    while ((WiFiMulti.run() != WL_CONNECTED) && (tries++ < 3)) { Serial.print("."); }
+  }
+  
   if (tries < 3) {
     status = 1; /* loop ok */
     Serial.println();
@@ -319,6 +329,7 @@ void loop_ok() {
 
 void handleRoot() {
   bool save_config = false;
+  String salvato = "";
 
   if (server.hasArg("ssid") && (server.arg("ssid").length() < PARAM_SIZE)) {
     String t = server.arg("ssid");
@@ -345,7 +356,7 @@ void handleRoot() {
     save_config = true;
   }
 
-  if (save_config) { saveConfig(); }
+  if (save_config) { saveConfig(); salvato = "<p><strong>SALVATO</strong></p>"; }
 
   String html = "<!DOCTYPE html>";
   html += "<html lang=\"it\">";
@@ -369,12 +380,12 @@ void handleRoot() {
   html += "      <label for=\"webservice\">Web Service:</label>";
   html += "      <input id=\"webservice\" type=\"text\" size=\"64\" name=\"webservice\" value=\"" + String(eeprom_config.webservice) + "\" placeholder=\"" + String(DEFAULT_WEBSERVICE) + "\" />";
   html += "      <br />";
-  html += "      <input id=\"submit-button\" type=\"submit\" value=\"SAVE\" />";
+  html += "      <input id=\"submit-button\" type=\"submit\" value=\"SAVE\" />" + salvato;
   html += "    </form>";
   html += "    <br />";
   html += "    <br />";
   html += "    <br />";
-  html += "    <a href=\"/reboot\">REBOOT</a>";
+  //html += "    <a href=\"/reboot\">REBOOT</a>";
   html += "  </body>";
   html += "</html>";
 
