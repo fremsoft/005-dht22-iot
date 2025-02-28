@@ -16,6 +16,12 @@ oppure
 
 Il kit è molto pericoloso perchè è collegato alla tensione di rete. È un kit per addetti ai lavori. Se vuoi realizzare questo kit, devi sapere come maneggiare la corrente elettrica.
 
+## Video dimostrativi 
+Il kit viene illustrato nei più piccoli particolari nei seguenti video:
+* https://youtu.be/USjC7U5dfC0 : parte 1 - protocollo di comunicazione DHT22 con Arduino UNO 
+* https://youtu.be/TniLj2XxBDA : parte 2 - creazione webservice su Hosting Web
+
+
 ## Software
 Il software si suddivide in due parti:
 
