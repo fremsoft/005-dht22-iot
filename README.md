@@ -6,6 +6,7 @@ Il dispositivo è composto da 4 elementi:
 * https://amzn.to/3aGO4Sa : Scatole con spina 230V CONRAD, Strapubox STECKER-GEH
 * https://amzn.to/3RDnE4i : TECNOIOT 5 pz AC-DC 5V 700mA AC 220V a 5V DC 3.5W Step Down Modulo di Alimentazione
 * https://amzn.to/3ESbvGP : IoT WLan WiFi DHT11 + ESP01 modulo sensore umidità
+
 oppure
 * https://s.click.aliexpress.com/e/_opMvvCm : IoT WLan WiFi DHT22 + ESP01 modulo sensore umidità
 * https://amzn.to/3IJ6aQ4 : SDENSHI DHT22 - Modulo sensore di temperatura digitale e umidità, 34 x 15 x 8 mm
